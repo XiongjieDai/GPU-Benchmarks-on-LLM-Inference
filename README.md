@@ -1,5 +1,5 @@
 # GPU-Benchmarks-on-LLM-Inference
-NVIDIA GPUs or Apple Silicon for Large Language Model Inference?
+Multiple NVIDIA GPUs or Apple Silicon for Large Language Model Inference?
 ## Description
 Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](https://arxiv.org/abs/2302.13971) models inference speed of different GPUs on [RunPod](https://www.runpod.io/), M1 Max MacBook pro and M2 Ultra Mac studio.
 ## Model
@@ -26,7 +26,7 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
     ./main --color -n 128 -c 512 --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/65B/ggml-model-f16.bin  -p "I believe the meaning of life is"
     ```
 ## Benchmarks
-Test as many f16 and q4_0 quantization models as possible. Run three time for each model. No listing result if OOM (Out of Memory).
+Test as many f16 and q4_0 quantization models as possible. Run three time for each model. Less eval time is better. No listing result if OOM (Out of Memory).
 ### NVIDIA GPUs (CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0 on RunPod)
 | GPU                       | Model (Q4_0 or f16)    | eval time (ms/token) |              |              |
 |:--------------------------|:-----------------------|:---------------------|:-------------|:-------------|
@@ -143,3 +143,4 @@ Test as many f16 and q4_0 quantization models as possible. Run three time for ea
 |                           | 65B_f16 (CPU)          | 574.8                | 588.38       | 584.53       |
 
 
+If you find this information helpful, please give me a star. Feel free to contact me if you have any advice. Thank you. 🤗
