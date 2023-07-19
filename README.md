@@ -8,7 +8,7 @@ Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](http
 
 ## Overview
 
-Average eval time (ms/token) by GPUs.
+Average eval time (ms/token) by GPUs. Less eval time is better.
 
 |GPU           | 7B (Q4_0)| 7B (f16)| 65B (Q4_0) | 65B (f16) |
 |----------------|------|--------|------------|-----------|
@@ -70,7 +70,7 @@ You may also need around the same disk space to save them and sufficient RAM to 
 
 ## Benchmarks
 
-Test as many f16 and q4_0 quantization models as possible. Run three time for each model. Less eval time is better. No listing result if OOM (Out of Memory).
+Test as many f16 and q4_0 quantization models as possible. Run three time for each model. No listing result if OOM (Out of Memory).
 
 ### NVIDIA GPUs (CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0 on RunPod)
 
