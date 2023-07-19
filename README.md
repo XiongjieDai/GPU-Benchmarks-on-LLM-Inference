@@ -1,6 +1,6 @@
 # GPU-Benchmarks-on-LLM-Inference
 
-Multiple NVIDIA GPUs or Apple Silicon for Large Language Model Inference?
+Multiple NVIDIA GPUs or Apple Silicon for Large Language Model Inference? 🧐
 
 ## Description
 
