@@ -164,5 +164,8 @@ Test as many f16 and q4_0 quantization models as possible. Run three time for ea
 |                           | 30B_f16                | 153.29               | 152.91       | 157.75       |
 |                           | 65B_f16 (CPU)          | 574.8                | 588.38       | 584.53       |
 
+## Conclusion
+
+Multiple NVIDIA GPUs will affect the performance at this moment. Buy 3090s to save money. Buy 4090s if you want to speed up. Buy A100s if you are rich. Buy mac studio if you want to put your computer on your desk, save energy, be quiet, and don't wanna maintenance.
 
 If you find this information helpful, please give me a star. Feel free to contact me if you have any advice. Thank you. 🤗
