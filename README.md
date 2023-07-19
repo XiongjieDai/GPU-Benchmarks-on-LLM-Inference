@@ -1,8 +1,34 @@
 # GPU-Benchmarks-on-LLM-Inference
-Apple Silicon or NVIDIA GPUs for Large Language Model Inference
+Apple Silicon or NVIDIA GPUs for Large Language Model Inference?
+## Description
+Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](https://arxiv.org/abs/2302.13971) models inference speed of different GPUs on [RunPod](https://www.runpod.io/), M1 Max MacBook pro and M2 Ultra Mac studio.
+## Model
+Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https://github.com/shawwn/llama-dl)
+## Usage
+- For NVIDIA GPUs:
 
-### NVIDIA GPUs(CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0)
-| *GPU*                     | *Model*                | *eval time ms/token* |              |              |
+    This provides BLAS acceleration using the CUDA cores of your Nvidia GPU. Multiple GPU works fine with no CPU bottleneck. `-ngl 10000` to make sure all layers are offloaded to GPU. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1827)
+    ```bash
+    make clean && LLAMA_CUBLAS=1 make -j
+    ```
+    Test arguments:
+    ```bash
+    ./main --color  -ngl 10000 -t 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
+    ```
+- For Apple Silicon:
+
+    Test arguments:
+    ```bash
+    ./main --color -n 128 -c 512 --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/13B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
+    ```
+    It seems we need to allocate equal memory on the CPU when we run the model on GPU. This means there is only half of the unified memory is unable to be allocated for the GPU. However, the good news is the inference speed seems usable. Use `-ngl 0` or delete it to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
+    ```bash
+    ./main --color -n 128 -c 512 --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/65B/ggml-model-f16.bin  -p "I believe the meaning of life is"
+    ```
+## Benchmarks
+Test as many f16 and q4_0 quantization models as possible. Run three time for each model. No result if OOM (Out of Memory).
+### NVIDIA GPUs (CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0 on RunPod)
+| GPU                       | Model (Q4_0 or f16)    | eval time (ms/token) |              |              |
 |:--------------------------|:-----------------------|:---------------------|:-------------|:-------------|
 | A4500 20GB                | 7B                     | 11.29                | 11.34        | 11.36        |
 |                           | 13B                    | 19.65                | 19.67        | 19.7         |
@@ -98,9 +124,8 @@ Apple Silicon or NVIDIA GPUs for Large Language Model Inference
 |                           | 30B_f16                | 75.76                | 75.84        | 75.98        |
 |                           | 65B_f16                | 116.09               | 116.03       | 115.9        |
 
-
 ### Apple Silicon
-| *GPU*                     | *Model*                | *eval time ms/token* |              |              |
+| GPU                       | Model (Q4_0 or f16)    | eval time (ms/token) |              |              |
 |:--------------------------|:-----------------------|:---------------------|:-------------|:-------------|
 | M1 Max 24-Core GPU 32GB   | 7B                     | 31.99                | 32.17        | 32.14        |
 |                           | 13B                    | 57.09                | 57.02        | 57.1         |
