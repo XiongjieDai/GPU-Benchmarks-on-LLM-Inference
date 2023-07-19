@@ -6,6 +6,30 @@ Multiple NVIDIA GPUs or Apple Silicon for Large Language Model Inference? 🧐
 
 Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](https://arxiv.org/abs/2302.13971) models inference speed of different GPUs on [RunPod](https://www.runpod.io/), M1 Max MacBook pro and M2 Ultra Mac studio.
 
+## Overview
+
+Average eval time (ms/token) by GPUs.
+
+|GPU             | 7B (Q4_0)| 7B (f16)|
+|----------------|------|--------|
+| A4500 20GB     | 11.33| 26.96  |
+| 3090 24GB      | 8.83 | 19.55  |
+| 4090 24GB      | 7.24 | 16.83  |
+| A4500 20GB * 2 | 19.55| 28.08  |
+| A6000 48GB     | 9.61 | 23.23  |
+| A6000ada 48GB  | 51.04| 166.29 |
+| 3090 24GB * 2  | 17.95| 22.69  |
+| 4090 24GB * 2  | 16.24| 21.61  |
+| 3090 24GB * 3  | 21.51| 25.62  |
+| 4090 24GB * 3  | 17.16| 21.05  |
+| A100 80GB      | 11.55| 14.27  |
+| A6000 48GB * 2 | 21.49| 28.21  |
+| 3090 24GB * 6  | 33.46| 35.08  |
+| M1 Max 32GB    | 32.1 | 67.44  |
+| M2 Ultra 192GB | 14.49| 38.54  |
+
+
+
 ## Model
 
 Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https://github.com/shawwn/llama-dl)
@@ -133,7 +157,7 @@ Test as many f16 and q4_0 quantization models as possible. Run three time for ea
 |                           | 13B                    | 29.47                | 30.75        | 29.22        |
 |                           | 30B                    | 55.22                | 56.35        | 56.44        |
 |                           | 65B                    | 86.42                | 84.99        | 89.09        |
-|                           | 7B_f16                 | 28.42                | 28.67c       | 27.55        |
+|                           | 7B_f16                 | 28.42                | 28.67        | 27.55        |
 |                           | 13B_f16                | 43.43                | 43.42        | 43.74        |
 |                           | 30B_f16                | 84.32                | 87.28        | 87.41        |
 |                           | 65B_f16                | OOM                  | OOM          | OOM          |
