@@ -10,24 +10,45 @@ Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](http
 
 Average eval time (ms/token) by GPUs. Less eval time is better.
 
-|GPU           | 7B (Q4_0)| 7B (f16)| 65B (Q4_0) | 65B (f16) |
-|----------------|------|--------|------------|-----------|
-| A4500 20GB     | 11.33| 26.96  | OOM        | OOM       |
-| 3090 24GB      | 8.83 | 19.55  | OOM        | OOM       |
-| 4090 24GB      | **7.24** | **16.83**  | OOM        | OOM       |
-| A4500 20GB * 2 | 19.55| 28.08  | OOM        | OOM       |
-| A6000 48GB     | 9.61 | 23.23  | 70.48	  | OOM       |
-| A6000ada 48GB  | 51.04| 166.29 | 736.06     | OOM       |
-| 3090 24GB * 2  | 17.95| 22.69  | 66.94      | OOM       |
-| 4090 24GB * 2  | 16.24| 21.61  | 62.54      | OOM       |
-| 3090 24GB * 3  | 21.51| 25.62  | 72.70      | OOM       |
-| 4090 24GB * 3  | 17.16| 21.05  | **59.71**      | OOM       |
-| A100 80GB      | 11.55| 14.27  | 68.09      | OOM       |
-| A6000 48GB * 2 | 21.49| 28.21  | 86.83      | OOM       |
-| 3090 24GB * 6  | 33.46| 35.08  | 96.03	  | **116.01**    |
-| M1 Max 32GB    | 32.1 | 67.44  | OOM        | OOM       |
-| M2 Ultra 192GB | 14.49| 38.54  | 93.04      | 582.57 (CPU)|
+| GPU                        | 7B_q4_0 | 7B_f16 | 65B_q4_0 | 65B_f16 |
+|----------------------------|---------|--------|----------|---------|
+| A4500 20GB                 | 11.33   | 26.96  | OOM      | OOM     |
+| 3090 24GB                  | 8.83    | 19.55  | OOM      | OOM     |
+| 4090 24GB                  |**7.24** |**16.83**| OOM     | OOM     |
+| A4500 20GB * 2             | 19.55   | 28.08  | OOM      | OOM     |
+| A6000 48GB                 | 9.61    | 23.23  | 70.48    | OOM     |
+| A6000ada 48GB              | 51.04   | 166.29 | 736.06   | OOM     |
+| 3090 24GB * 2              | 17.95   | 22.69  | 66.94    | OOM     |
+| 4090 24GB * 2              | 16.24   | 21.61  | 62.54    | OOM     |
+| 3090 24GB * 3              | 21.51   | 25.62  | 72.7     | OOM     |
+| 4090 24GB * 3              | 17.16   | 21.05  |**59.71** | OOM     |
+| A100 80GB                  | 11.55   | 14.27  | 68.09    | OOM     |
+| A6000 48GB * 2             | 21.49   | 28.21  | 86.83    | OOM     |
+| 3090 24GB * 6              | 33.46   | 35.08  | 96.03    |**116.01**|
+| M1 Max 24-Core GPU 32GB    | 32.17   | 70     | OOM      | OOM     |
+| M2 Ultra 76-Core GPU 192GB | 14.24   | 37.1   | 90.89   |589.35(CPU)|
 
+
+Average prompt eval time (ms/token) by GPUs.
+
+
+| GPU                        | 7B_q4_0 | 7B_f16 | 65B_q4_0 | 65B_f16 |
+|----------------------------|---------|--------|----------|---------|
+| A4500 20GB                 | 2.15    | 1.63   | OOM      | OOM     |
+| 3090 24GB                  | 1.52    | 1.57   | OOM      | OOM     |
+| 4090 24GB                  |**0.92** |**0.98**| OOM      | OOM     |
+| A4500 20GB * 2             | 4.42    | 4.37   | OOM      | OOM     |
+| A6000 48GB                 | 1.25    | 1.36   | 9.58     | OOM     |
+| A6000ada 48GB              | 4.66    | 6.21   | 79.78    | OOM     |
+| 3090 24GB * 2              | 5.37    | 4.83   | 16.91    | OOM     |
+| 4090 24GB * 2              | 3.44    | 3.42   | 12.29    | OOM     |
+| 3090 24GB * 3              | 7.95    | 7.94   | 24.94    | OOM     |
+| 4090 24GB * 3              | 6.87    | 6.66   | 20.72    | OOM     |
+| A100 80GB                  | 1.04    | 1.01   | **6.5**  | OOM     |
+| A6000 48GB * 2             | 4.96    | 4.86   | 18.66    | OOM     |
+| 3090 24GB * 6              | 18.17   | 18.16  | 49.24    |**49.43**|
+| M1 Max 24-Core GPU 32GB    | 17.34   | 17.53  | OOM      | OOM     |
+| M2 Ultra 76-Core GPU 192GB | 12.07   | 11.48  | 96.14    | 98.08   |
 
 
 ## Model
@@ -50,11 +71,11 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
 
     Test arguments:
     ```bash
-    ./main --color -n 128 -c 512 --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/13B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
+    ./main --color --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
     ```
-    It seems we need to allocate equal memory on the CPU when we run the model on GPU. This means there is only half of the unified memory is unable to be allocated for the GPU. However, the good news is the inference speed seems usable. Use `-ngl 0` or delete it to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
+    It seems we need to allocate equal memory on the CPU when we run the model on GPU. This means there is only half of the unified memory is unable to be allocated for the GPU. Use `-ngl 0` or delete it to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
     ```bash
-    ./main --color -n 128 -c 512 --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/65B/ggml-model-f16.bin  -p "I believe the meaning of life is"
+    ./main --color --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/65B/ggml-model-f16.bin  -p "I believe the meaning of life is"
     ```
 
 ## Total VRAM Requirements
