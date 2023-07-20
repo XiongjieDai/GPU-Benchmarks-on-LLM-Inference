@@ -46,7 +46,7 @@ Average prompt eval time (ms/token) by GPUs.
 | A6000 48GB * 2             | 4.96    | 4.86   | 18.66    | OOM     |
 | 3090 24GB * 6              | 18.17   | 18.16  | 49.24    |**49.43**|
 | M1 Max 24-Core GPU 32GB    | 17.34   | 17.53  | OOM      | OOM     |
-| M2 Ultra 76-Core GPU 192GB | 12.07   | 11.48  | 96.14    | 98.08   |
+| M2 Ultra 76-Core GPU 192GB | 12.07   | 11.48  | 96.14   |98.08(CPU)|
 
 
 ## Model
