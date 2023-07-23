@@ -67,6 +67,10 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
     ```
 - For Apple Silicon:
 
+    Using Metal allows the computation to be executed on the GPU for Apple devices:
+    ```bash
+    make clean && LLAMA_METAL=1 make -j
+    ```
     Test arguments:
     ```bash
     ./main --color --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
