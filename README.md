@@ -107,9 +107,11 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
 
 ## Benchmarks
 
-The whole original data, including the 13B and 30B models. Run three times for each model. 
+The whole original data, including the 13B and 30B models. Run three times for each model. Add LLaMA 2 for Apple Silicon.
 
 ### NVIDIA GPUs (CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0 on RunPod)
+
+#### LLaMA 🦙:
 
 | GPU | Model | eval time |     |     | prompt eval time |     |     | mean eval time | mean prompt eval time |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
