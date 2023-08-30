@@ -260,7 +260,7 @@ The whole original data, including the 13B and 30B models. Run three times for e
 
 Same performance on LLaMA and LLaMA 2 of the same size and quantization. Multiple NVIDIA GPUs might affect the performance.
 
-For LLM inference, buy 4090s if you want to speed up. Buy A100s if you are rich. Buy Mac Studio if you want to put your computer on your desk, save energy, be quiet, and don't wanna maintenance. (If you want to **train** LLM, choose NIVIDA.)
+For LLM inference, buy 3090s to save money. Buy 4090s if you want to speed up. Buy A100s if you are rich. Buy Mac Studio if you want to put your computer on your desk, save energy, be quiet, and don't wanna maintenance. (If you want to **train** LLM, choose NIVIDA.)
 
 If you find this information helpful, please give me a star. Feel free to contact me if you have any advice. Thank you. 🤗
 
