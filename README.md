@@ -25,8 +25,8 @@ Average eval time (ms/token) by GPUs. Less eval time is better.
 | A100 80GB                  | 11.55     | 14.27    | 68.09      | OOM       |
 | A6000 48GB * 2             | 21.49     | 28.21    | 86.83      | OOM       |
 | 3090 24GB * 6              | 33.46     | 35.08    | 96.03      | **116.01**|
-| M1 Max 24-Core GPU 32GB    | 21.06     | 74.17    | OOM        | OOM       |
-| M2 Ultra 76-Core GPU 192GB | 11.79     | 36.67    | 70.47      | 300.06    |
+| M1 Max 24-Core GPU 32GB    | 20.78     | 71.6     | OOM        | OOM       |
+| M2 Ultra 76-Core GPU 192GB | 12.04     | 34.96    | 70.21      | 262.87    |
 
 Average prompt eval time (ms/token) by GPUs.
 
@@ -44,9 +44,9 @@ Average prompt eval time (ms/token) by GPUs.
 | 4090 24GB * 3              | 6.87      | 6.66     | 20.72      | OOM       |
 | A100 80GB                  | 1.04      | 1.01     | **6.5**    | OOM       |
 | A6000 48GB * 2             | 4.96      | 4.86     | 18.66      | OOM       |
-| 3090 24GB * 6              | 18.17     | 18.16    | 49.24      | **49.43** |
-| M1 Max 24-Core GPU 32GB    | 18.12     | 20.07    | OOM        | OOM       |
-| M2 Ultra 76-Core GPU 192GB | 13.31     | 13.57    | 98.3       | 120.33    |
+| 3090 24GB * 6              | 18.17     | 18.16    | 49.24      | 49.43     |
+| M1 Max 24-Core GPU 32GB    | 5.02      | 4.68     | OOM        | OOM       |
+| M2 Ultra 76-Core GPU 192GB | 1.65      | 1.57     | 11.91      | **11.07** |
 
 
 ## Model
@@ -61,7 +61,7 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
     ```bash
     make clean && LLAMA_CUBLAS=1 make -j
     ```
-    Test arguments:
+    Test arguments: (Switch to `.gguf` models after 21 Aug 2023. See: https://github.com/ggerganov/llama.cpp/pull/2398)
     ```bash
     ./main --color  -ngl 10000 -t 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
     ```
@@ -73,20 +73,16 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
     ```
     Test arguments:
     ```bash
-    ./main --color --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
+    ./main --color --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B-v2/ggml-model-q4_0.gguf  -p "I believe the meaning of life is"
     ```
     Check the `recommendedMaxWorkingSetSize` in the result to see how much memory can be allocated on GPU and maintain its performance. Only 65% of unified memory can be allocated to the GPU on 32GB M1 Max, and we expect 75% of usable memory for the GPU on larger memory. (Source: https://developer.apple.com/videos/play/tech-talks/10580/?time=346) To utilize the whole memory, use `-ngl 0` or delete it to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
     ```bash
-    ./main --color --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/13B/ggml-model-f16.bin  -p "I believe the meaning of life is"
-    ```
-    Add the grouping factor `-gqa 8` for LLaMAv2 70B: (Thanks to: https://github.com/ggerganov/llama.cpp/pull/2276)
-    ```bash
-    ./main --color --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 -gqa 8 --ignore-eos -m ./models/70B-v2/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
+    ./main --color --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/13B-v2/ggml-model-f16.gguf  -p "I believe the meaning of life is"
     ```
 
 ## Total VRAM Requirements
 
-### NIVIDA GPUs
+### NIVIDA GPUs (snapshots in July 2023)
 
 | Model | Quantized size (4-bit) | Original size (f16) |
 |------:|--------------------:|-----------------------:|
@@ -95,7 +91,7 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
 |   30B |             20.5 GB |                63.7 GB |
 |   65B |               40 GB |                 127 GB |
 
-### Apple Silicon
+### Apple Silicon (snapshots in Aug 2023)
 
 | Model | Quantized size (4-bit) | Original size (f16) |
 |------:|--------------------:|-----------------------:|
@@ -109,7 +105,7 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
 
 The whole original data, including the 13B and 30B models. Run three times for each model. Add LLaMA 2 for Apple Silicon.
 
-### NVIDIA GPUs (CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0 on RunPod)
+### NVIDIA GPUs (CPU: AMD EPYC, OS: Ubuntu 22.04.2 LTS, pytorch:2.0.1, py3.10, cuda11.8.0 on RunPod) (snapshots in July 2023)
 
 #### LLaMA 🦙:
 
@@ -220,45 +216,45 @@ The whole original data, including the 13B and 30B models. Run three times for e
 |  | 30B_f16 | 75.76 | 75.84 | 75.98 | 35.63 | 35.81 | 35.62 | 75.86 | 35.69 |
 |  | 65B_f16 | 116.09 | 116.03 | 115.9 | 49.27 | 49.43 | 49.6 | 116.01 | 49.43 |
 
-### Apple Silicon
+### Apple Silicon (snapshots in Aug 2023)
 
 #### LLaMA 🦙:
 
 | GPU | Model | eval time |     |     | prompt eval time |     |     | mean eval time | mean prompt eval time |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M1 Max 24-Core GPU 32GB | 7B_q4_0 | 20.89 | 21.17 | 21.13 | 18.13 | 18.19 | 18.05 | 21.06 | 18.12 |
-|  | 13B_q4_0 | 36.18 | 36.04 | 36.2 | 32.77 | 33.19 | 32.31 | 36.14 | 32.76 |
-|  | 30B_q4_0 | 80.03 | 80.19 | 79.55 | 80.71 | 80.51 | 81.23 | 79.92 | 80.82 |
-|  | 65B_q4_0 | OOM | OOM | OOM | OOM | OOM | OOM | OOM | OOM |
-|  | 7B_f16 | 74.09 | 74.28 | 74.14 | 20.09 | 20.02 | 20.1 | 74.17 | 20.07 |
-|  | 13B_f16 (CPU) | 223.68 | 224.39 | 223.5 | 50.73 | 49.78 | 37.59 | 223.86 | 46.03 |
-|  | 30B_f16 | OOM | OOM | OOM | OOM | OOM | OOM | OOM | OOM |
-|  | 65B_f16 | OOM | OOM | OOM | OOM | OOM | OOM | OOM | OOM |
-| M2 Ultra 76-Core GPU 192GB | 7B_q4_0 | 11.82 | 11.8 | 11.75 | 13.34 | 13.3 | 13.29 | 11.79 | 13.31 |
-|  | 13B_q4_0 | 18.98 | 18.99 | 19.03 | 22.72 | 22.61 | 22.7 | 19 | 22.68 |
-|  | 30B_q4_0 | 39.94 | 40.03 | 39.99 | 49.96 | 50.14 | 49.46 | 39.99 | 49.85 |
-|  | 65B_q4_0 | 70.47 | 70.41 | 70.54 | 98.1 | 97.94 | 98.87 | 70.47 | 98.3 |
-|  | 7B_f16 | 36.7 | 36.71 | 36.6 | 13.55 | 13.66 | 13.5 | 36.67 | 13.57 |
-|  | 13B_f16 | 68.87 | 69.38 | 69.33 | 23.66 | 23.64 | 23.74 | 69.19 | 23.68 |
-|  | 30B_f16 | 152.41 | 152.44 | 152.65 | 53.53 | 52.63 | 53.12 | 152.5 | 53.09 |
-|  | 65B_f16 | 298.51 | 300 | 301.67 | 121.04 | 119.56 | 120.39 | 300.06 | 120.33 |
+| M1 Max 24-Core GPU 32GB    | 7B_q4_0       | 20.46       | 20.45        | 21.44        | 5.02               | 5.02         | 5.01         | 20.78            | 5.02                    |
+|                            | 13B_q4_0      | 34.97       | 36.85        | 40.58        | 8.93               | 10.42        | 10.76        | 37.47            | 10.04                   |
+|                            | 30B_q4_0      | 75.88       | 76.15        | 76.21        | 20.29              | 20.27        | 20.29        | 76.08            | 20.28                   |
+|                            | 65B_q4_0      | OOM         | OOM          | OOM          | OOM                | OOM          | OOM          | OOM              | OOM                     |
+|                            | 7B_f16        | 71.5        | 71.65        | 71.64        | 4.68               | 4.69         | 4.68         | 71.6             | 4.68                    |
+|                            | 13B_f16 (CPU) | 222.71      | 230.77       | 222.93       | 37.66              | 35.52        | 53.63        | 225.47           | 42.27                   |
+|                            | 30B_f16       | OOM         | OOM          | OOM          | OOM                | OOM          | OOM          | OOM              | OOM                     |
+|                            | 65B_f16       | OOM         | OOM          | OOM          | OOM                | OOM          | OOM          | OOM              | OOM                     |
+| M2 Ultra 76-Core GPU 192GB | 7B_q4_0       | 12.04       | 12.03        | 12.04        | 1.64               | 1.65         | 1.65         | 12.04            | 1.65                    |
+|                            | 13B_q4_0      | 19.52       | 19.08        | 19.07        | 2.91               | 2.9          | 2.9          | 19.22            | 2.9                     |
+|                            | 30B_q4_0      | 40.66       | 39.54        | 40.75        | 6.49               | 6.47         | 6.47         | 40.32            | 6.48                    |
+|                            | 65B_q4_0      | 71.12       | 69.87        | 69.65        | 11.94              | 11.87        | 11.92        | 70.21            | 11.91                   |
+|                            | 7B_f16        | 34.86       | 34.99        | 35.02        | 1.57               | 1.57         | 1.56         | 34.96            | 1.57                    |
+|                            | 13B_f16       | 61.47       | 62.13        | 63.01        | 2.71               | 2.73         | 2.72         | 62.2             | 2.72                    |
+|                            | 30B_f16       | 138.91      | 137.71       | 139.48       | 6                  | 6.03         | 6.01         | 138.7            | 6.01                    |
+|                            | 65B_f16       | 262.82      | 262.95       | 262.83       | 11.08              | 11.06        | 11.06        | 262.87           | 11.07                   |
 
 #### LLaMA 2 🦙🦙:
 
 | GPU | Model | eval time |     |     | prompt eval time |     |     | mean eval time | mean prompt eval time |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M1 Max 24-Core GPU 32GB | 7B_q4_0 | 21.58 | 21.67 | 21.16 | 18.21 | 18.22 | 18.19 | 21.47 | 18.21 |
-|  | 13B_q4_0 | 36.07 | 36.1 | 36.12 | 32.88 | 32.66 | 32.74 | 36.1 | 32.76 |
-|  | 70B_q4_0 | OOM | OOM | OOM | OOM | OOM | OOM | OOM | OOM |
-|  | 7B_f16 | 74.29 | 74.35 | 74.23 | 19.8 | 20.09 | 20.05 | 74.29 | 19.98 |
-|  | 13B_f16 (CPU) | 223.79 | 225.91 | 225.02 | 52.22 | 49.58 | 53.12 | 224.91 | 51.64 |
-|  | 70B_f16 | OOM | OOM | OOM | OOM | OOM | OOM | OOM | OOM |
-| M2 Ultra 76-Core GPU 192GB | 7B_q4_0 | 11.81 | 11.76 | 11.82 | 13.56 | 13.48 | 13.14 | 11.8 | 13.39 |
-|  | 13B_q4_0 | 18.95 | 18.94 | 18.97 | 22.95 | 23.12 | 23.3 | 18.95 | 23.12 |
-|  | 70B_q4_0 | 76.39 | 76.4 | 76.19 | 102.33 | 102.73 | 103.36 | 76.33 | 102.81 |
-|  | 7B_f16 | 36.63 | 36.57 | 36.58 | 13.64 | 13.63 | 13.71 | 36.59 | 13.66 |
-|  | 13B_f16 | 69.42 | 69.28 | 69.32 | 23.46 | 23.62 | 23.53 | 69.34 | 23.54 |
-|  | 70B_f16 | 313.12 | 315.24 | 316.07 | 132.47 | 129.04 | 127.05 | 314.81 | 129.52 |
+| M1 Max 24-Core GPU 32GB    | 7B_q4_0       | 20.49       | 20.65        | 20.53        | 5.01               | 5.01         | 5.01         | 20.56            | 5.01                    |
+|                            | 13B_q4_0      | 38.31       | 37.36        | 38.01        | 8.95               | 9.9          | 10.97        | 37.89            | 9.94                    |
+|                            | 70B_q4_0      | OOM         | OOM          | OOM          | OOM                | OOM          | OOM          | OOM              | OOM                     |
+|                            | 7B_f16        | 71.52       | 72.63        | 72.83        | 4.7                | 4.68         | 4.7          | 72.33            | 4.69                    |
+|                            | 13B_f16 (CPU) | 227.05      | 225.6        | 228.64       | 36.28              | 37.9         | 40.11        | 227.1            | 38.1                    |
+|                            | 70B_f16       | OOM         | OOM          | OOM          | OOM                | OOM          | OOM          | OOM              | OOM                     |
+| M2 Ultra 76-Core GPU 192GB | 7B_q4_0       | 12.07       | 12.05        | 12           | 1.65               | 1.64         | 1.66         | 12.04            | 1.65                    |
+|                            | 13B_q4_0      | 19.09       | 19.09        | 19.11        | 2.91               | 2.9          | 2.91         | 19.1             | 2.91                    |
+|                            | 70B_q4_0      | 73.55       | 72.95        | 73.06        | 13.76              | 13.75        | 13.74        | 73.19            | 13.75                   |
+|                            | 7B_f16        | 34.18       | 34.19        | 34.22        | 1.55               | 1.55         | 1.55         | 34.2             | 1.55                    |
+|                            | 13B_f16       | 61.48       | 61.53        | 61.54        | 2.71               | 2.71         | 2.71         | 61.52            | 2.71                    |
+|                            | 70B_f16       | 277.83      | 278.09       | 277.73       | 12.94              | 12.93        | 12.93        | 277.88           | 12.93                   |
 
 ## Conclusion
 
@@ -267,4 +263,26 @@ Same performance on LLaMA and LLaMA 2 of the same size and quantization. Multipl
 For LLM inference, buy 4090s if you want to speed up. Buy A100s if you are rich. Buy Mac Studio if you want to put your computer on your desk, save energy, be quiet, and don't wanna maintenance. (If you want to **train** LLM, choose NIVIDA.)
 
 If you find this information helpful, please give me a star. Feel free to contact me if you have any advice. Thank you. 🤗
+
+## Appendix
+
+All the latest results are welcome! 🥰 (Thanks to: MichaelDays ❤️)
+
+### Mac
+
+#### LLaMA 2 🦙🦙:
+
+| GPU | Model | eval time |     |     | prompt eval time |     |     | mean eval time | mean prompt eval time |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Mac Pro (2019 intel/16 core/384GB) CPU | 7B_q4_0| 54.78 | 61.74 | 59.77 | 35.72 | 37.29 | 35.88 | 58.76 | 36.30 |
+| | 13B_q4_0 | 102.20 | 101.97 | 100.26 | 63.28 | 62.77 | 62.93 | 101.48 | 62.99 |
+| | 70B_q4_0 | 547.89 | 456.45 | 457.12 | 295.31 | 296.16 | 295.12 | 487.15 | 295.53 |
+| M2 Mini Pro (12/19/32GB) CPU | 7B_q4_0 | 48.04 | 45.78 | 49.61 | 17.34 | 16.81 | 16.82 | 47.81 | 16.99 |
+| | 13B_q4_0 | 75.93 | 72.56 | 71.66 | 29.39 | 28.50 | 28.46 | 73.38 | 28.78 |
+| | 70B_q4_0 | 225956.54 | OOM | OOM | 27220.19 | OOM | OOM | OOM | OOM |
+| | 7B.f16 | 118.10 | 116.46 | 118.95 | 17.11 | 16.62 | 17.84 | 117.84 | 17.19 |
+| M2 Mini Pro (12/19/32GB) GPU | 7B_q4_0 | 28.92 | 28.54 | 29.27 | 5.89 | 5.95 | 5.86 | 28.91 | 5.90 |
+| | 13B_q4_0 | 50.76 | 50.71 | 50.63 | 10.30 | 10.29 | 10.28 | 50.70 | 10.29 |
+| | 70B_q4_0 | OOM | OOM | OOM | OOM | OOM | OOM | OOM | OOM |
+| | 7B.f16 | 92.43 | 91.91 | 92.11 | 5.56 | 5.53 | 5.56 | 92.15 | 5.55 |
 
