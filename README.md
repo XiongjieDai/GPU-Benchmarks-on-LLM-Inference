@@ -53,7 +53,7 @@ Average prompt eval time (ms/token) by GPUs.
 | M2 Ultra 76-Core GPU 192GB | **0.82**  | **0.73** | 7.18       | **6.34**  |
 | M3 10-Core GPU 16GB        | 5.45      | 34.16    | OOM        | OOM       |
 | M3 Max 40-Core GPU 48GB    | 1.35      | 1.38     | 100.99     | OOM       |
-| M3 Max 30-Core GPU 96GB    | 9.06      | 9.74     | 149.37     | OOM       |
+| M3 Max 30-Core GPU 96GB    | 9.06      | 9.74     | 76.97      | OOM       |
 
 
 ## Model
