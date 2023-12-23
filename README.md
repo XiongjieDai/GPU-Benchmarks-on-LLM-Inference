@@ -65,24 +65,28 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
     ```bash
     make clean && LLAMA_CUBLAS=1 make -j
     ```
-    Test arguments: (Switch to `.gguf` models after 21 Aug 2023. See: https://github.com/ggerganov/llama.cpp/pull/2398)
+    A longer prompt will make prompt processing speed per token faster. Here, we input around 500 tokens for the test. Test arguments: 
     ```bash
-    ./main --color  -ngl 10000 -t 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B/ggml-model-q4_0.bin  -p "I believe the meaning of life is"
+    !./main --color --no-mmap -ngl 10000 --temp 1.1 --repeat_penalty 1.1 -n 1024 --ignore-eos -m ./models/7B/ggml-model-q4_0.gguf  -p "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only. <0x0A>\
+    There were a king with a large jaw and a queen with a plain face, on the throne of England; there were a king with a large jaw and a queen with a fair face, on the throne of France. In both countries it was clearer than crystal to the lords of the State preserves of loaves and fishes, that things in general were settled for ever. <0x0A>\
+    It was the year of Our Lord one thousand seven hundred and seventy-five. Spiritual revelations were conceded to England at that favoured period, as at this. Mrs. Southcott had recently attained her five-and-twentieth blessed birthday, of whom a prophetic private in the Life Guards had heralded the sublime appearance by announcing that arrangements were made for the swallowing up of London and Westminster. Even the Cock-lane ghost had been laid only a round dozen of years, after rapping out its messages, as the spirits of this very year last past (supernaturally deficient in originality) rapped out theirs. Mere messages in the earthly order of events had lately come to the English Crown and People, from a congress of British subjects in America: which, strange to relate, have proved more important to the human race than any communications yet received through any of the chickens of the Cock-lane brood. <0x0A>\
+    France, less favoured on the whole as to matters spiritual than her sister of the shield and trident, rolled with exceeding smoothness down hill, making paper money and spending it."
     ```
+    
 - For Apple Silicon:
 
     Using Metal allows the computation to be executed on the GPU for Apple devices:
     ```bash
     make clean && LLAMA_METAL=1 make -j
     ```
-    Test arguments:
+    The arguments are the same as those on Nvidia GPUs, except we only need `-ngl 1` to ensure all layers are offloaded to the GPU. Test arguments:
     ```bash
-    ./main --color --no-mmap -ngl 1 --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/7B-v2/ggml-model-q4_0.gguf  -p "I believe the meaning of life is"
+    !./main --color --no-mmap -ngl 1 --temp 1.1 --repeat_penalty 1.1 -n 1024 --ignore-eos -m ./models/7B/ggml-model-q4_0.gguf  -p "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only. <0x0A>\
+    There were a king with a large jaw and a queen with a plain face, on the throne of England; there were a king with a large jaw and a queen with a fair face, on the throne of France. In both countries it was clearer than crystal to the lords of the State preserves of loaves and fishes, that things in general were settled for ever. <0x0A>\
+    It was the year of Our Lord one thousand seven hundred and seventy-five. Spiritual revelations were conceded to England at that favoured period, as at this. Mrs. Southcott had recently attained her five-and-twentieth blessed birthday, of whom a prophetic private in the Life Guards had heralded the sublime appearance by announcing that arrangements were made for the swallowing up of London and Westminster. Even the Cock-lane ghost had been laid only a round dozen of years, after rapping out its messages, as the spirits of this very year last past (supernaturally deficient in originality) rapped out theirs. Mere messages in the earthly order of events had lately come to the English Crown and People, from a congress of British subjects in America: which, strange to relate, have proved more important to the human race than any communications yet received through any of the chickens of the Cock-lane brood. <0x0A>\
+    France, less favoured on the whole as to matters spiritual than her sister of the shield and trident, rolled with exceeding smoothness down hill, making paper money and spending it."
     ```
-    Check the `recommendedMaxWorkingSetSize` in the result to see how much memory can be allocated on GPU and maintain its performance. Only 65% of unified memory can be allocated to the GPU on 32GB M1 Max, and we expect 75% of usable memory for the GPU on larger memory. (Source: https://developer.apple.com/videos/play/tech-talks/10580/?time=346) To utilize the whole memory, use `-ngl 0` or delete it to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
-    ```bash
-    ./main --color --no-mmap --temp 0.7 --repeat_penalty 1.1 -n 512 --ignore-eos -m ./models/13B-v2/ggml-model-f16.gguf  -p "I believe the meaning of life is"
-    ```
+    Check the `recommendedMaxWorkingSetSize` in the result to see how much memory can be allocated on GPU and maintain its performance. Only 65% of unified memory can be allocated to the GPU on 32GB M1 Max, and we expect 75% of usable memory for the GPU on larger memory. (Source: https://developer.apple.com/videos/play/tech-talks/10580/?time=346) To utilize the whole memory, use `-ngl 0` to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
 
 ## Total VRAM Requirements
 
