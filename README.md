@@ -4,7 +4,7 @@ Multiple NVIDIA GPUs or Apple Silicon for Large Language Model Inference? 🧐
 
 ## Description
 
-Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](https://arxiv.org/abs/2302.13971) models inference speed of different GPUs on [RunPod](https://www.runpod.io/), 16-inch M1 Max MacBook Pro, M2 Ultra Mac Studio, 14-inch M3 MacBook Pro and 16-inch M3 Max MacBook Pro.
+Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](https://arxiv.org/abs/2302.13971) models inference speed of different GPUs on [RunPod](https://www.runpod.io/), 16-inch M1 Max MacBook Pro, M2 Ultra Mac Studio, 14-inch M3 MacBook Pro and 16-inch M3 Max MacBook Pro for LLaMA & LLaMA 2; and 13-inch M1 MacBook Air, 14-inch M1 Max MacBook Pro, M2 Ultra Mac Studio and 16-inch M3 Max MacBook Pro for LLaMA 3.
 
 ## Overview
 
@@ -65,38 +65,81 @@ Average prompt eval speed (tokens/s) by GPUs on LLaMA 2.
 
 ## Model
 
-Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https://github.com/shawwn/llama-dl). Access LLaMA 2 from [Meta AI](https://ai.meta.com/llama/).
+Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https://github.com/shawwn/llama-dl). Access LLaMA 2 from [Meta AI](https://ai.meta.com/llama/). Access LLaMA 3 from [Meta Llama 3](https://huggingface.co/collections/meta-llama/meta-llama-3-66214712577ca38149ebb2b6) on Hugging Face or my Hugging Face repos: [Xiongjie Dai](https://huggingface.co/JaaackXD).
 
 ## Usage
 
-- For NVIDIA GPUs:
+### Build
 
-    This provides BLAS acceleration using the CUDA cores of your Nvidia GPU. Multiple GPU works fine with no CPU bottleneck. `-ngl 10000` to make sure all layers are offloaded to GPU. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1827)
+- For NVIDIA GPUs, this provides BLAS acceleration using the CUDA cores of your Nvidia GPU:
+
     ```bash
-    make clean && LLAMA_CUBLAS=1 make -j
-    ```
-    A longer prompt will make prompt processing speed per token faster. Here, we input around 500 tokens for the test. Test arguments: 
-    ```bash
-    !./main --color --no-mmap -ngl 10000 --temp 1.1 --repeat_penalty 1.1 -n 1024 --ignore-eos -m ./models/7B/ggml-model-q4_0.gguf  -p "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only. <0x0A>\
-    There were a king with a large jaw and a queen with a plain face, on the throne of England; there were a king with a large jaw and a queen with a fair face, on the throne of France. In both countries it was clearer than crystal to the lords of the State preserves of loaves and fishes, that things in general were settled for ever. <0x0A>\
-    It was the year of Our Lord one thousand seven hundred and seventy-five. Spiritual revelations were conceded to England at that favoured period, as at this. Mrs. Southcott had recently attained her five-and-twentieth blessed birthday, of whom a prophetic private in the Life Guards had heralded the sublime appearance by announcing that arrangements were made for the swallowing up of London and Westminster. Even the Cock-lane ghost had been laid only a round dozen of years, after rapping out its messages, as the spirits of this very year last past (supernaturally deficient in originality) rapped out theirs. Mere messages in the earthly order of events had lately come to the English Crown and People, from a congress of British subjects in America: which, strange to relate, have proved more important to the human race than any communications yet received through any of the chickens of the Cock-lane brood. <0x0A>\
-    France, less favoured on the whole as to matters spiritual than her sister of the shield and trident, rolled with exceeding smoothness down hill, making paper money and spending it."
+    !make clean && LLAMA_CUBLAS=1 make -j
     ```
 
-- For Apple Silicon:
+- For Apple Silicon, Metal is enabled by default:
 
-    Using Metal allows the computation to be executed on the GPU for Apple devices:
     ```bash
-    make clean && LLAMA_METAL=1 make -j
+    !make clean && make -j
     ```
-    The arguments are the same as those on Nvidia GPUs, except we only need `-ngl 1` to ensure all layers are offloaded to the GPU. Test arguments:
-    ```bash
-    !./main --color --no-mmap -ngl 1 --temp 1.1 --repeat_penalty 1.1 -n 1024 --ignore-eos -m ./models/7B/ggml-model-q4_0.gguf  -p "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only. <0x0A>\
-    There were a king with a large jaw and a queen with a plain face, on the throne of England; there were a king with a large jaw and a queen with a fair face, on the throne of France. In both countries it was clearer than crystal to the lords of the State preserves of loaves and fishes, that things in general were settled for ever. <0x0A>\
-    It was the year of Our Lord one thousand seven hundred and seventy-five. Spiritual revelations were conceded to England at that favoured period, as at this. Mrs. Southcott had recently attained her five-and-twentieth blessed birthday, of whom a prophetic private in the Life Guards had heralded the sublime appearance by announcing that arrangements were made for the swallowing up of London and Westminster. Even the Cock-lane ghost had been laid only a round dozen of years, after rapping out its messages, as the spirits of this very year last past (supernaturally deficient in originality) rapped out theirs. Mere messages in the earthly order of events had lately come to the English Crown and People, from a congress of British subjects in America: which, strange to relate, have proved more important to the human race than any communications yet received through any of the chickens of the Cock-lane brood. <0x0A>\
-    France, less favoured on the whole as to matters spiritual than her sister of the shield and trident, rolled with exceeding smoothness down hill, making paper money and spending it."
-    ```
-    Check the `recommendedMaxWorkingSetSize` in the result to see how much memory can be allocated on GPU and maintain its performance. Only 65% of unified memory can be allocated to the GPU on 32GB M1 Max, and we expect 75% of usable memory for the GPU on larger memory. (Source: https://developer.apple.com/videos/play/tech-talks/10580/?time=346) To utilize the whole memory, use `-ngl 0` to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
+
+### Text completion
+
+Use argument `-ngl 0` to only use the CPU for inference, `-ngl 10000` to make sure all layers are offloaded to GPU.
+
+```bash
+!./main -ngl 10000 -m ./models/8B-v3/ggml-model-Q4_K_M.gguf --color --temp 1.1 --repeat_penalty 1.1 -c 0 -n 1024 -e -s 0 -p """\
+First Citizen:\n\n\
+Before we proceed any further, hear me speak.\n\n\
+\n\n\
+All:\n\n\
+Speak, speak.\n\n\
+\n\n\
+First Citizen:\n\n\
+You are all resolved rather to die than to famish?\n\n\
+\n\n\
+All:\n\n\
+Resolved. resolved.\n\n\
+\n\n\
+First Citizen:\n\n\
+First, you know Caius Marcius is chief enemy to the people.\n\n\
+\n\n\
+All:\n\n\
+We know't, we know't.\n\n\
+\n\n\
+First Citizen:\n\n\
+Let us kill him, and we'll have corn at our own price. Is't a verdict?\n\n\
+\n\n\
+All:\n\n\
+No more talking on't; let it be done: away, away!\n\n\
+\n\n\
+Second Citizen:\n\n\
+One word, good citizens.\n\n\
+\n\n\
+First Citizen:\n\n\
+We are accounted poor citizens, the patricians good. What authority surfeits on would relieve us: if they would yield us but the superfluity, \
+while it were wholesome, we might guess they relieved us humanely; but they think we are too dear: the leanness that afflicts us, the object of \
+our misery, is as an inventory to particularise their abundance; our sufferance is a gain to them Let us revenge this with our pikes, \
+ere we become rakes: for the gods know I speak this in hunger for bread, not in thirst for revenge.\n\n\
+\n\n\
+"""
+```
+
+**Note:** For Apple Silicon, check the `recommendedMaxWorkingSetSize` in the result to see how much memory can be allocated on GPU and maintain its performance. Only **70%** of unified memory can be allocated to the GPU on 32GB M1 Max right now, and we expect around **78%** of usable memory for the GPU on larger memory. (Source: https://developer.apple.com/videos/play/tech-talks/10580/?time=346) To utilize the whole memory, use `-ngl 0` to only use the CPU for inference. (Thanks to: https://github.com/ggerganov/llama.cpp/pull/1826)
+
+### Chat template for LLaMA 3
+
+```bash
+!./main -ngl 10000 -m ./models/8B-v3-instruct/ggml-model-Q4_K_M.gguf --color -c 0 -n -2 -e -s 0 --mirostat 2 -i --no-display-prompt --keep -1 \
+-r '<|eot_id|>' -p '<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are a helpful assistant.<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nHi!<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n' \
+--in-prefix '<|start_header_id|>user<|end_header_id|>\n\n' --in-suffix '<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'
+```
+
+### Benchmark
+
+```bash
+!./llama-bench -p 512,1024,4096,8192 -n 512,1024,4096,8192 -m ./models/8B-v3/ggml-model-Q4_K_M.gguf
+```
 
 ## Total VRAM Requirements
 
@@ -133,7 +176,7 @@ Thanks to shawwn for LLaMA model weights (7B, 13B, 30B, 65B): [llama-dl](https:/
 
 `PP` means "prompt processing," and `TG` means "text-generation." # for total processing/generated tokens. Average speed in tokens/s.
 
-### LLaMA 🦙🦙🦙:
+### LLaMA 3 🦙🦙🦙:
 
 #### Apple Silicon (snapshots in May 2024)
 
