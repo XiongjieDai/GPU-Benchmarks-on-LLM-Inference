@@ -8,7 +8,7 @@ Use [llama.cpp](https://github.com/ggerganov/llama.cpp) to test the [LLaMA](http
 
 ## Overview
 
-Average eval speed (tokens/s) by GPUs on LLaMA 3. A higher eval speed is better.
+Average speed (tokens/s) of generating 1024 tokens by GPUs on LLaMA 3. Higher speed is better.
 
 | GPU                        | 8B Q4_K_M | 8B F16 | 70B Q4_K_M | 70B F16 |
 |----------------------------|-----------|--------|------------|---------|
@@ -48,7 +48,7 @@ Average eval speed (tokens/s) by GPUs on LLaMA 3. A higher eval speed is better.
 | M2 Ultra 76-Core GPU 192GB | 76.28     | 36.25  | 12.13      | 4.71    |
 | M3 Max 40‑Core GPU 64GB    | 50.74     | 22.39  | 7.53       | OOM     |
 
-Average prompt eval speed (tokens/s) by GPUs on LLaMA 3.
+Average 1024 tokens prompt eval speed (tokens/s) by GPUs on LLaMA 3.
 
 | GPU                        | 8B Q4_K_M | 8B F16  | 70B Q4_K_M | 70B F16 |
 |----------------------------|-----------|---------|------------|---------|
